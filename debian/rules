@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+PACKAGE_VER:=$(shell dpkg-parsechangelog | sed -n -e 's/^Version: //p')
+DEB_PATH=dists/unstable/main/binary-amd64
+
 %:
 	dh $@ --parallel --with autoreconf --builddirectory=build
 
@@ -15,3 +18,23 @@ override_dh_install:
 
 override_dh_auto_configure:
 	dh_auto_configure -- --disable-silent-rules
+
+publish:
+	rm -rf .git/publish
+	git branch -D publish || true
+	git worktree add .git/publish
+	cd .git/publish; git branch -D gh-pages || true
+	cd .git/publish; git checkout --orphan gh-pages
+	cd .git/publish; git rm -rf .; git clean -x -d -f
+	mkdir -p .git/publish/debian/${DEB_PATH}
+	sed -r '/^Files:$$/,$$ { /^Files:$$/ d; s/ [0-9a-f]+ [0-9]+ [a-z0-9]+ [a-z]+ //; p}; d' ../yubico-piv-tool_$(PACKAGE_VER)_amd64.changes | while read file; do \
+		cp ../$$file .git/publish/debian/;\
+	done
+	cd .git/publish/debian; dpkg-scanpackages . > ${DEB_PATH}/Packages
+	cd .git/publish; echo '<html><body><pre>deb http://baloo.github.io/yubico-piv-tool-dpkg/debian/ unstable main</pre></body></html>' > index.html
+	gpg --sign  -ba --digest-algo SHA256 -o .git/publish/debian/${DEB_PATH}/Packages.gpg .git/publish/debian/${DEB_PATH}/Packages
+	cd .git/publish/debian/dists/unstable/; apt-ftparchive --md5 --sha256 release . > Release
+	cd .git/publish/debian/dists/unstable/; gpg --armor --digest-algo SHA256 --output Release.gpg --detach-sign Release
+	cd .git/publish/debian/dists/unstable/; gpg --clearsign --digest-algo SHA256 --output InRelease Release
+	cd .git/publish; git add .; git commit -m "new version"
+	git push origin +gh-pages
