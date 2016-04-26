@@ -1,4 +1,4 @@
 usr/lib/*/libykpiv.so
 usr/lib/*/libykpiv.a
-usr/lib/*/pkgconfig
+usr/lib/*/pkgconfig/ykpiv.pc
 usr/include/ykpiv

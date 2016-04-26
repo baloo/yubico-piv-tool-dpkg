@@ -10,6 +10,7 @@ override_dh_install:
 	find debian/tmp -name \*.la -delete
 	find debian/tmp -name libykcs11.a -delete
 	find debian/tmp -name ykcs11-version.h -delete
+	find debian/tmp -name ykcs11.pc -delete
 	dh_install --fail-missing
 
 override_dh_auto_configure:

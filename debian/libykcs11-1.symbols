@@ -1,0 +1,4 @@
+libykcs11.so.1 libykcs11 #MINVER#
+ C_GetFunctionList@YKCS11_0.1.0 1.3.1-1~nmu1
+ C_Initialize@YKCS11_0.1.0 1.3.1-1~nmu1
+ YKCS11_0.1.0@YKCS11_0.1.0 1.3.1-1~nmu1
