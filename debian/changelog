@@ -1,3 +1,10 @@
+yubico-piv-tool (1.1.2-1.1) UNRELEASED; urgency=medium
+
+  [ Arthur Gautier ]
+  * Fixup uscan pgp check
+
+ -- Arthur Gautier <baloo@khany>  Tue, 26 Apr 2016 00:25:47 +0000
+
 yubico-piv-tool (1.1.2-1) unstable; urgency=low
 
   * New upstram version.
